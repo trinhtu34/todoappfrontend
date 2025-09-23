@@ -7,9 +7,9 @@ const DevNavigation = () => {
   const navItems = [
     { path: '/login', label: 'Login' },
     { path: '/register', label: 'Register' },
-    { path: '/simple-login', label: 'Simple Login' },
-    { path: '/debug-login', label: 'Debug Login' },
-    { path: '/auth-status', label: 'Auth Status' },
+    // { path: '/simple-login', label: 'Simple Login' },
+    // { path: '/debug-login', label: 'Debug Login' },
+    // { path: '/auth-status', label: 'Auth Status' },
     { path: '/dashboard', label: 'Dashboard' }
   ];
 

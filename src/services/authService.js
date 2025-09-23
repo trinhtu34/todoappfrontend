@@ -70,22 +70,10 @@ class AuthService {
         
         this.token = response.data.accessToken;
         this.refreshToken = response.data.refreshToken;
-        
-        console.log('Setting tokens:', {
-          accessToken: this.token ? this.token.substring(0, 20) + '...' : 'null',
-          refreshToken: this.refreshToken ? this.refreshToken.substring(0, 20) + '...' : 'null'
-        });
-        
+      
         localStorage.setItem('accessToken', this.token);
         localStorage.setItem('refreshToken', this.refreshToken);
         localStorage.setItem('idToken', response.data.idToken);
-        
-        // Verify storage
-        console.log('Tokens stored:', {
-          accessToken: localStorage.getItem('accessToken') ? 'stored' : 'not stored',
-          refreshToken: localStorage.getItem('refreshToken') ? 'stored' : 'not stored',
-          idToken: localStorage.getItem('idToken') ? 'stored' : 'not stored'
-        });
         
         return { success: true, data: response.data };
       }

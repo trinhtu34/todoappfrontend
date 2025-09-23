@@ -20,9 +20,9 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/simple-login" element={<SimpleLogin />} />
+            {/* <Route path="/simple-login" element={<SimpleLogin />} />
             <Route path="/auth-status" element={<AuthStatus />} />
-            <Route path="/debug-login" element={<DebugLogin />} />
+            <Route path="/debug-login" element={<DebugLogin />} /> */}
             <Route 
               path="/dashboard" 
               element={
