@@ -30,7 +30,7 @@ const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false }) => {
       };
 
       const result = await onSubmit(submitData);
-      
+
       if (result.success) {
         // Form will be closed by parent component
       } else {
@@ -50,7 +50,7 @@ const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false }) => {
           <h3 className="text-lg font-medium text-gray-900 mb-4">
             {isEditing ? 'Chỉnh sửa Todo' : 'Thêm Todo mới'}
           </h3>
-          
+
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
               {error}
