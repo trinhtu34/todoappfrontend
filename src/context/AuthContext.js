@@ -30,10 +30,14 @@ export const AuthProvider = ({ children }) => {
         if (token) {
           try {
             const payload = JSON.parse(atob(token.split('.')[1]));
+            const groups = payload['cognito:groups'] || [];
+            const userType = groups.includes('Permium-user') ? 'premium' : 'free';
+            
             setUser({
               username: payload.username || payload['cognito:username'] || 'User',
               sub: payload.sub,
-              name: payload.name || payload['cognito:username'] || 'User'
+              name: payload.name || payload['cognito:username'] || 'User',
+              userType: userType
             });
           } catch (decodeError) {
             console.warn('Could not decode token, using default user info');
@@ -64,10 +68,14 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const payload = JSON.parse(atob(token.split('.')[1]));
+          const groups = payload['cognito:groups'] || [];
+          const userType = groups.includes('Permium-user') ? 'premium' : 'free';
+          
           setUser({
             username: payload.username || payload['cognito:username'] || usernameOrPhone,
             sub: payload.sub,
-            name: payload.name || payload['cognito:username'] || usernameOrPhone
+            name: payload.name || payload['cognito:username'] || usernameOrPhone,
+            userType: userType
           });
         } catch (decodeError) {
           console.warn('Could not decode token after login');

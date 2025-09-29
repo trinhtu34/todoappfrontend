@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import TagSelector from './TagSelector';
 
-const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false }) => {
+const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false, userType }) => {
   const [formData, setFormData] = useState({
     description: todo?.description || '',
     dueDate: todo?.dueDate ? new Date(todo.dueDate).toISOString().split('T')[0] : '',
@@ -87,6 +88,19 @@ const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false }) => {
                 onChange={handleChange}
               />
             </div>
+
+            {userType === 'premium' && (
+              <TagSelector 
+                todoId={todo?.todoId}
+                userType={userType}
+                onTagsChange={(tags) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    tagIds: tags.map(tag => tag.tagId)
+                  }));
+                }}
+              />
+            )}
 
             <div className="flex justify-end space-x-3 pt-4">
               <button
