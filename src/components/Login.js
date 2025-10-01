@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    usernameOrPhone: '',
+    email: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -26,7 +26,7 @@ const Login = () => {
     setError('');
 
     try {
-      const result = await login(formData.usernameOrPhone, formData.password);
+      const result = await login(formData.email, formData.password);
       
       if (result.success) {
         navigate('/dashboard');
@@ -58,13 +58,13 @@ const Login = () => {
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <input
-                id="usernameOrPhone"
-                name="usernameOrPhone"
-                type="text"
+                id="email"
+                name="email"
+                type="email"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Tên đăng nhập hoặc số điện thoại"
-                value={formData.usernameOrPhone}
+                placeholder="Email"
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>

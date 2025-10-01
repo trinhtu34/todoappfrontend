@@ -6,6 +6,11 @@ const TodoItem = ({ todo, onToggleComplete, onEdit, onDelete }) => {
         return new Date(dateString).toLocaleDateString('vi-VN');
     };
 
+    const formatDateTime = (dateString) => {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleString('vi-VN');
+    };
+
     return (
         <div className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${todo.isDone ? 'border-green-500 bg-gray-50' : 'border-blue-500'
             }`}>
@@ -25,7 +30,7 @@ const TodoItem = ({ todo, onToggleComplete, onEdit, onDelete }) => {
 
                         {todo.dueDate && (
                             <p className="text-sm text-gray-600">
-                                Hạn: {formatDate(todo.dueDate)}
+                                Hạn: {formatDateTime(todo.dueDate)}
                             </p>
                         )}
 

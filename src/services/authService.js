@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { API_ENDPOINTS } from '../config/api';
+import api from '../config/api';
 
 class AuthService {
   constructor() {
@@ -13,55 +12,13 @@ class AuthService {
       tokenLength: this.token ? this.token.length : 0
     });
     
-    // Configure axios defaults
-    axios.defaults.withCredentials = false;
-    axios.defaults.headers.common['Content-Type'] = 'application/json';
-    
-    // Setup axios interceptor for automatic token attachment
-    axios.interceptors.request.use(
-      (config) => {
-        if (this.token) {
-          config.headers.Authorization = `Bearer ${this.token}`;
-        }
-        // Ensure proper headers for CORS
-        config.headers['Accept'] = 'application/json';
-        config.headers['Content-Type'] = 'application/json';
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-
-    // Setup response interceptor for token refresh
-    axios.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        const originalRequest = error.config;
-        
-        if (error.response?.status === 401 && this.refreshToken && !originalRequest._retry) {
-          originalRequest._retry = true;
-          
-          try {
-            await this.refreshAccessToken();
-            // Update the authorization header with new token
-            originalRequest.headers.Authorization = `Bearer ${this.token}`;
-            // Retry the original request
-            return axios.request(originalRequest);
-          } catch (refreshError) {
-            console.error('Token refresh failed:', refreshError);
-            this.logout();
-            // Don't redirect here, let the component handle it
-            return Promise.reject(refreshError);
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
+    // Token sẽ được handle bởi api.js interceptor
   }
 
-  async login(usernameOrPhone, password) {
+  async login(email, password) {
     try {
-      const response = await axios.post(API_ENDPOINTS.LOGIN, {
-        usernameOrPhone,
+      const response = await api.post('/auth/login', {
+        email,
         password
       });
 
@@ -87,15 +44,14 @@ class AuthService {
     }
   }
 
-  async register(phoneNumber, password, name, username) {
+  async register(email, password, name) {
     try {
-      const response = await axios.post(API_ENDPOINTS.REGISTER, {
-        phoneNumber,
+      const response = await api.post('/auth/register', {
+        email,
         password,
-        name,
-        username
+        name
       });
-
+      
       return { success: true, data: response.data };
     } catch (error) {
       return { 
@@ -105,10 +61,10 @@ class AuthService {
     }
   }
 
-  async confirmSignUp(username, confirmationCode) {
+  async confirmSignUp(email, confirmationCode) {
     try {
-      const response = await axios.post(API_ENDPOINTS.CONFIRM, {
-        username,
+      const response = await api.post('/auth/confirm', {
+        email,
         confirmationCode
       });
 
@@ -123,7 +79,7 @@ class AuthService {
 
   async refreshAccessToken() {
     try {
-      const response = await axios.post(API_ENDPOINTS.REFRESH, {
+      const response = await api.post('/auth/refresh', {
         refreshToken: this.refreshToken
       });
 
@@ -172,4 +128,5 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+const authServiceInstance = new AuthService();
+export default authServiceInstance;

@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
 import TagSelector from './TagSelector';
+import TagSelectorForForm from './TagSelectorForForm';
 
 const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false, userType }) => {
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    // Adjust for timezone offset to show local time
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+    return localDate.toISOString().slice(0, 16);
+  };
+
   const [formData, setFormData] = useState({
     description: todo?.description || '',
-    dueDate: todo?.dueDate ? new Date(todo.dueDate).toISOString().split('T')[0] : '',
+    dueDate: formatDateForInput(todo?.dueDate),
     tagIds: todo?.tags?.map(tag => tag.tagId) || []
   });
   const [loading, setLoading] = useState(false);
@@ -26,7 +36,7 @@ const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false, userType }) => 
     try {
       const submitData = {
         description: formData.description,
-        dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
+        dueDate: formData.dueDate ? formData.dueDate : null,
         tagIds: formData.tagIds
       };
 
@@ -82,7 +92,7 @@ const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false, userType }) => 
               <input
                 id="dueDate"
                 name="dueDate"
-                type="date"
+                type="datetime-local"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={formData.dueDate}
                 onChange={handleChange}
@@ -90,16 +100,29 @@ const TodoForm = ({ todo, onSubmit, onCancel, isEditing = false, userType }) => 
             </div>
 
             {userType === 'premium' && (
-              <TagSelector 
-                todoId={todo?.todoId}
-                userType={userType}
-                onTagsChange={(tags) => {
-                  setFormData(prev => ({
-                    ...prev,
-                    tagIds: tags.map(tag => tag.tagId)
-                  }));
-                }}
-              />
+              isEditing ? (
+                <TagSelector 
+                  todoId={todo?.todoId}
+                  userType={userType}
+                  onTagsChange={(tags) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      tagIds: tags.map(tag => tag.tagId)
+                    }));
+                  }}
+                />
+              ) : (
+                <TagSelectorForForm
+                  userType={userType}
+                  selectedTagIds={formData.tagIds}
+                  onTagsChange={(tagIds) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      tagIds: tagIds
+                    }));
+                  }}
+                />
+              )
             )}
 
             <div className="flex justify-end space-x-3 pt-4">

@@ -1,10 +1,9 @@
-import axios from 'axios';
-import { API_ENDPOINTS } from '../config/api';
+import api from '../config/api';
 
 class TodoService {
   async getTodos() {
     try {
-      const response = await axios.get(API_ENDPOINTS.TODOS);
+      const response = await api.get('/todos');
       return { success: true, data: response.data };
     } catch (error) {
       return { 
@@ -16,7 +15,7 @@ class TodoService {
 
   async getTodo(id) {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.TODOS}/${id}`);
+      const response = await api.get(`/todos/${id}`);
       return { success: true, data: response.data };
     } catch (error) {
       return { 
@@ -28,7 +27,7 @@ class TodoService {
 
   async createTodo(todoData) {
     try {
-      const response = await axios.post(API_ENDPOINTS.TODOS, todoData);
+      const response = await api.post('/todos', todoData);
       return { success: true, data: response.data };
     } catch (error) {
       return { 
@@ -40,7 +39,7 @@ class TodoService {
 
   async updateTodo(id, todoData) {
     try {
-      await axios.put(`${API_ENDPOINTS.TODOS}/${id}`, todoData);
+      await api.put(`/todos/${id}`, todoData);
       return { success: true };
     } catch (error) {
       return { 
@@ -52,7 +51,7 @@ class TodoService {
 
   async deleteTodo(id) {
     try {
-      await axios.delete(`${API_ENDPOINTS.TODOS}/${id}`);
+      await api.delete(`/todos/${id}`);
       return { success: true };
     } catch (error) {
       return { 

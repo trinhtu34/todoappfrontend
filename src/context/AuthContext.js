@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
           try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             const groups = payload['cognito:groups'] || [];
-            const userType = groups.includes('Permium-user') ? 'premium' : 'free';
+            const userType = groups.includes('Premium-user') ? 'premium' : 'free';
             
             setUser({
               username: payload.username || payload['cognito:username'] || 'User',
@@ -58,8 +58,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (usernameOrPhone, password) => {
-    const result = await authService.login(usernameOrPhone, password);
+  const login = async (email, password) => {
+    const result = await authService.login(email, password);
     if (result.success) {
       setIsAuthenticated(true);
 
@@ -69,29 +69,29 @@ export const AuthProvider = ({ children }) => {
         try {
           const payload = JSON.parse(atob(token.split('.')[1]));
           const groups = payload['cognito:groups'] || [];
-          const userType = groups.includes('Permium-user') ? 'premium' : 'free';
+          const userType = groups.includes('Premium-user') ? 'premium' : 'free';
           
           setUser({
-            username: payload.username || payload['cognito:username'] || usernameOrPhone,
+            username: payload.username || payload['cognito:username'] || email,
             sub: payload.sub,
-            name: payload.name || payload['cognito:username'] || usernameOrPhone,
+            name: payload.name || payload['cognito:username'] || email,
             userType: userType
           });
         } catch (decodeError) {
           console.warn('Could not decode token after login');
-          setUser({ username: usernameOrPhone, name: usernameOrPhone });
+          setUser({ username: email, name: email });
         }
       }
     }
     return result;
   };
 
-  const register = async (phoneNumber, password, name, username) => {
-    return await authService.register(phoneNumber, password, name, username);
+  const register = async (email, password, name) => {
+    return await authService.register(email, password, name);
   };
 
-  const confirmSignUp = async (username, confirmationCode) => {
-    return await authService.confirmSignUp(username, confirmationCode);
+  const confirmSignUp = async (email, confirmationCode) => {
+    return await authService.confirmSignUp(email, confirmationCode);
   };
 
   const logout = () => {

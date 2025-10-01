@@ -14,27 +14,34 @@ const TagManager = ({ userType }) => {
 
   const loadTags = async () => {
     try {
-      setLoading(true);
       const data = await tagService.getTags();
+      console.log('Loaded tags:', data);
       setTags(data);
     } catch (error) {
       console.error('Error loading tags:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleCreateTag = async (e) => {
     e.preventDefault();
-    if (!newTagName.trim()) return;
+    console.log('Creating tag:', newTagName);
+    
+    if (!newTagName.trim()) {
+      console.log('Empty tag name');
+      return;
+    }
 
     try {
       setLoading(true);
-      await tagService.createTag(newTagName);
+      console.log('Calling tagService.createTag');
+      const result = await tagService.createTag(newTagName.trim());
+      console.log('Create result:', result);
+      
       setNewTagName('');
-      loadTags();
+      await loadTags();
     } catch (error) {
       console.error('Error creating tag:', error);
+      alert('Lỗi tạo tag: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -75,11 +82,11 @@ const TagManager = ({ userType }) => {
         </button>
       </form>
 
-      {loading ? (
-        <p>Loading tags...</p>
-      ) : (
-        <div className="tags-list">
-          {tags.map(tag => (
+      <div className="tags-list">
+        {tags.length === 0 ? (
+          <p>Chưa có tag nào</p>
+        ) : (
+          tags.map(tag => (
             <div key={tag.tagId} className="tag-item">
               <span className="tag-name">{tag.tagName}</span>
               <button 
@@ -89,9 +96,9 @@ const TagManager = ({ userType }) => {
                 ×
               </button>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 };
